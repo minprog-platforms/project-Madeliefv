@@ -36,7 +36,7 @@ The variables in this model will be:
 One cell stays put, and the other moves outwards (to the surrounding grid with the least other cells). The chemotherapy can attack the outer cells(first has to kill all cells in the surrounding grid before moving on). The stem cells will divide symmetrically with a chance of being given by the user and asymmetrically with a chance of 1- the probability of symmetrically dividing. The transitory cells will always move outwards. The transitory will divide with a chance of the division rate
 
 ## Example of what the model might look like
-<img src="./doc/Screenshot 2021-12-06 at 14.26.50.png" alt="example" style="height:100 px; width:150 px;"/>
+<img src="./doc/Screenshot 2021-12-06 at 14.26.50.png" alt="example" style="height:100px; width:150px;"/>
 
 ## External data
 papers used during project (not yet found the best ones)
