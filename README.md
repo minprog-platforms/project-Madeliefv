@@ -3,7 +3,7 @@
 This project aims to create an Agent-Based Model of a tumour and its treatment. In this model, we consider a few properties, such as size and division capabilities. We also look at the effect of chemotherapy on tumour growth.
 
 ### research question
-With this model, I would like to answer the research question. What is the effect of the properties of the tumour and the concentration of chemotherapy on its eradication?
+With this model, I would like to answer the research question. What is the effect of the properties of the tumour and the concentration of chemotherapy on tumour growth?
 
 ### short theory behind the model
 During mitosis, a stem cell can divide either asymmetrically or symmetrically. During asymmetric mitosis, one of the two daughter cells stays a stem cell and, thus replacing its parent. This means that a stem cell effectively never dies. It is quasi reincarnated after each division. The other daughter cell turns into a transitory cell, which moves outward. A stem cell may also divide symmetrically into two stem cells. 
@@ -33,7 +33,9 @@ The variables in this model will be:
 - stemcell division symmetrically
 
 ## How it works
-One cell stays put, and the other moves outwards (to the surrounding grid with the least other cells). The chemotherapy can attack the outer cells(first has to kill all cells in the surrounding grid before moving on). The stem cells will divide symmetrically with a chance of being given by the user and asymmetrically with a chance of 1- the probability of symmetrically dividing. The transitory cells will always move outwards. The transitory will divide with a chance of the division rate
+One cell stays put, and the other moves outwards (to the surrounding grid and pushes other cells outwards). The chemotherapy can attack the outer cells(first has to kill all cells in the surrounding grid before moving on). The stem cells will divide symmetrically with a chance of being given by the user and asymmetrically with a chance of 1- the probability of symmetrically dividing. The transitory cells will always move outwards. The transitory will divide with a chance of the division rate. 
+
+The model will show the cell count in a live graph.
 
 ## Example of what the model might look like
 <img src="./doc/Screenshot 2021-12-06 at 14.26.50.png" alt="example" style="height:200px; width:350px;"/>
@@ -48,3 +50,10 @@ Possibilities for enlarging the project:
         - In this case, there will be a chance that one of the stemcells comes loose and will migrate to a different part where it will form a new tumour
 - also adding other treatment options and seeing their effects
 - add the immune system 
+- 3D model 
+
+## Biggest challenges
+- making sure the dividing pushes the other cells outwards
+- do I make the chemo go towards the tumour (as tumour has a lot of vessels so automatically a lot goes to it) or not (as the chemo does not go there consiously)
+- to what detail will I go in this project-> a lot is possible but might be too much
+- 3D modelling 
