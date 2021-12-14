@@ -35,3 +35,9 @@
 - adjusting interface -> adding sliders
 - redoing expansion tumour -> make it more efficient
 
+## 14-12-2021
+- adjusting the step so it will make sure 0.5% of cells will do a step
+- adjusting tumour agent so the side it will be pushed to is variable 
+    - first random north, east, norhteast, etc
+    - then more specific eg. if on top side it will only go north bottem side only will go south
+- trying to find out if I can adjust a model variable in the agent class
