@@ -1,4 +1,5 @@
 from mesa import Agent
+import random
 
 
 class Tumour_agent(Agent):
@@ -8,32 +9,66 @@ class Tumour_agent(Agent):
         self.status = type_agent
         self.eaten = True
         self.time_eaten = 0
-
-    def expand(self, agent, direction):
-        #check the direction in which a particular agent expands (will impact x,y coordinates used)
-        x,y = agent.pos
         
-        if (direction == "NORTH"):
+    
+    def duplicate(self):
+        # duplicating the cell
+         if (self.status == "stem_cell" or self.status == "transitional_div"):
+            self.model.id = self.model.id + 1
+            
+            # creating new agent
+            expanded_cell = Tumour_agent(self.model.id, self, self.status)
+            self.model.grid.place_agent(expanded_cell, self.pos)
+            self.model.cells.append(expanded_cell)
+            
+            # deciding which side the new cell is pushed to
+            x_plus, y_plus = self.choice_direction(expanded_cell)
+            self.expand(expanded_cell, x_plus, y_plus)
+
+
+    def expand(self, agent_to_place, x_plus, y_plus):
+        #check the direction in which a particular agent expands (will impact x,y coordinates used)
+        x,y = agent_to_place.pos
+        
+        if y + y_plus < self.model.grid.height and y + y_plus >= 0 and x + x_plus < self.model.grid.width and x + x_plus >= 0:
             #remember the cell that was in there before expansion (assuming that there is only one object, it is on pos 0)                
-            cell_contents = self.model.grid.get_cell_list_contents((x,y+1))
-            print(cell_contents)
+            cell_contents = self.model.grid.get_cell_list_contents((x + x_plus, y + y_plus))
             
-            if (len(cell_contents) > 0):
+            if len(cell_contents) > 0 and isinstance(cell_contents[0], Tumour_agent) :
                 old_cell = cell_contents[0]
-            
-                #check the type of cell that is expanding
-                if (agent.status == "stem_cell" or agent.status == "transitional_div" or agent.status == "transitional_nondiv"):
-                    #create a new cell of the expanding type, with incremented id of that type
-                    print(old_cell)
-                    #ENSURE THAT A DIFFERENT AGENT IS CREATED FOR A DIFFERENT TYPE OF CELL
-                    expanded_cell = Tumour_agent(self.model.id + 1, self, "stem_cell")
-                    #place that newly created agent on the adjacent square in the direction
-                    self.model.grid.place_agent(expanded_cell, (x, y + 1))
-                    #recursive function if the next cell is not empty (if the content list is not null)
-                    self.expand(old_cell, "NORTH")
+                self.model.grid.place_agent(agent_to_place, (x + x_plus, y + y_plus))
+                # self.model.grid._remove_agent(self.pos, agent_to_place)
+                # direction_next =self.random.choices(["N", "S", "E", "W", "NE", "SE", "NW", "SW"], k = 1)[0]
+                x_plus, y_plus = self.choice_direction(old_cell)
+                self.expand(old_cell, x_plus, y_plus)
+            elif len(cell_contents)== 0 or isinstance(cell_contents[0], Chemo_agent):
+                self.model.grid.place_agent(agent_to_place, (x + x_plus, y + y_plus))
+        else:
+            self.model.grid.place_agent(agent_to_place, (x, y))
+        
+    def choice_direction(self, agent_to_direct):
+        x,y = agent_to_direct.pos
+        x_plus = 0
+        y_plus = 0
+        if x > self.model.grid.width/2:
+            x_plus = 1
+        elif x < self.model.grid.width/2:
+            x_plus = -1
+        if random.randint(0,9) < 8:
+            x_plus = 0
+        
+        if y > self.model.grid.height/2:
+            y_plus = 1
+        elif y < self.model.grid.height/2:
+            y_plus = -1
+        if random.randint(0,9) < 8:
+            y_plus = 0
+        return x_plus, y_plus
+
+    
 
     def step(self):
-        self.expand(self, "NORTH")
+        self.duplicate()
 
 
 
@@ -45,10 +80,13 @@ class Chemo_agent(Agent):
         self.age = 0 
 
     def move(self):
-        # self.random_move()
+        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
+        new_position = random.choice(possible_steps)
+        self.model.grid.move_agent(self, new_position)
         
-        # If there is a tumour cell present killl
-        x, y = self.pos
+    
+    def kill(self):
+         # If there is a tumour cell present killl
         this_cell = self.model.grid.get_cell_list_contents([self.pos])
         cancer_cell = [obj for obj in this_cell if isinstance(obj, Tumour_agent)]
         for i in range(len(cancer_cell)):
@@ -56,8 +94,9 @@ class Chemo_agent(Agent):
 
             # Kill the cells
             self.model.grid._remove_agent(self.pos, cell_to_kill)
-            self.model.schedule.remove(cell_to_kill)
+            # self.model.schedule.remove(cell_to_kill)
     
     def step(self):
         self.move()
+        self.kill()
         

@@ -3,6 +3,7 @@ from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from tumour_agent import Tumour_agent, Chemo_agent
 from math import sin, cos
+import random
 
 class Tumour_model (Model):
     """A model with some number of agents."""
@@ -13,6 +14,7 @@ class Tumour_model (Model):
         self.schedule = RandomActivation(self)
         self.running = True
         self.id = 0
+        self.cells = []
 
         # Create tumour agents
         y = int(self.grid.height/2)
@@ -34,6 +36,7 @@ class Tumour_model (Model):
                 self.schedule.add(a)
                 self.grid.place_agent(a, (x+x1, y+y1))
                 self.id += 1
+                self.cells.append(a)
 
         # Place chemo
         for i in range(self.concentration):
@@ -49,5 +52,7 @@ class Tumour_model (Model):
                     break
 
     def step(self):
-        self.schedule.step()
+        agent_step =self.random.choices(self.cells, k = int(len(self.cells)* 0.005))
+        for i in range(len(agent_step)):
+            agent_step[i].step()
 

@@ -57,3 +57,4 @@ Possibilities for enlarging the project:
 - do I make the chemo go towards the tumour (as tumour has a lot of vessels so automatically a lot goes to it) or not (as the chemo does not go there consiously)
 - to what detail will I go in this project-> a lot is possible but might be too much
 - 3D modelling 
+
