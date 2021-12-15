@@ -40,4 +40,14 @@
 - adjusting tumour agent so the side it will be pushed to is variable 
     - first random north, east, norhteast, etc
     - then more specific eg. if on top side it will only go north bottem side only will go south
-- trying to find out if I can adjust a model variable in the agent class
+- making sure the chemo steps every step.
+
+
+## 15-12-2021
+- changed the tumour_agent when expanding to look around if there are any empty places
+- changed choice_direction in tumour agent -> to assure it will never be x_plus = 0 and y_plus = 0 (which would mean it does not move)
+- Ensuring chemo agent only kills dividing cells
+- added death to tumour agent 
+    - killing cells (non dividing and transitional div) after a certain age (dividing 2x long then non div)
+    - killing cells with less then 2 surounding cells
+- adjust duplicate so that stem_cells can also split into transitional div, 

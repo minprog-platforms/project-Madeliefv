@@ -33,7 +33,6 @@ class Tumour_model (Model):
                 x1 = int(j * cos(i * RAD))
                 y1 = int(j * sin(i * RAD))
                 a = Tumour_agent(self.id, self, type_agent)
-                self.schedule.add(a)
                 self.grid.place_agent(a, (x+x1, y+y1))
                 self.id += 1
                 self.cells.append(a)
@@ -52,7 +51,8 @@ class Tumour_model (Model):
                     break
 
     def step(self):
-        agent_step =self.random.choices(self.cells, k = int(len(self.cells)* 0.005))
+        agent_step =self.random.choices(self.cells, k = int(len(self.cells)* 0.001))
         for i in range(len(agent_step)):
             agent_step[i].step()
+        self.schedule.step()
 
