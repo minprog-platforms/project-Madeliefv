@@ -50,4 +50,13 @@
 - added death to tumour agent 
     - killing cells (non dividing and transitional div) after a certain age (dividing 2x long then non div)
     - killing cells with less then 2 surounding cells
-- adjust duplicate so that stem_cells can also split into transitional div, 
+- adjust duplicate so that stem_cells can also split into transitional div
+
+## 16-12-2021
+- inserted graph with toal N cells and N cells per cell kind
+- moved duplicate to model 
+- adjusted death (tumour agent) and kill (chemo agent)
+    - made two seperate schedules for tumour agents and for chemo agents -> so the killing of cells will nog interfere
+    - in order to use datacollector the tumour agent schedule had to change from schedule_cells -> schedule otherwise it would not work.
+- adjusted tumour agent-> as it had agents double
+- removed errors from chemo agent
