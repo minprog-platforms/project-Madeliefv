@@ -13,36 +13,47 @@ def compute_total_cells(model):
 def compute_stem_cells(model):
     return len([cell for cell in model.schedule.agents if cell.status == "stem_cell"])
 # Compute number of transitional dividing cells
-def compute_transitional_div(model):
-    return len([cell for cell in model.schedule.agents if cell.status == "transitional_div"]) 
+def compute_transit_amplifying(model):
+    return len([cell for cell in model.schedule.agents if cell.status == "transit_amplifying"]) 
 # Compute number of transitional non-dividing cells
-def compute_transitional_nondiv(model):
-    return len([cell for cell in model.schedule.agents if cell.status == "transitional_nondiv"]) 
+def compute_differentiated(model):
+    return len([cell for cell in model.schedule.agents if cell.status == "differentiated"]) 
+
+def compute_stop_status(model):
+    return model.stop_status 
+
+def compute_steps(model):
+    return model.steps
 
 
 class Tumour_model (Model):
     """A model with a tumour consisting of cell agents with radius r and a concentration of chemo agents."""
-    def __init__(self, radius, concentration, width, height):
+    def __init__(self, radius, concentration, chemo_repetition, vascularisation, width, height):
         self.r = radius
         self.concentration = concentration
-        self.grid = MultiGrid(width, height, True)
+        self.chemo_repetition = chemo_repetition
+        self.vascularisation = vascularisation
+        self.grid = MultiGrid(width, height, False)
         self.schedule_chemo = RandomActivation(self)
         self.schedule= RandomActivation(self)
         self.running = True
         self.id = 0
         self.cells = []
+        self.steps = 0
+        self.stop_status = "not_stopped"
+
 
         # Create tumour agents in circle
         y = int(self.grid.height/2)
         x = int(self.grid.width/2)
         RAD = 3.1415926535 / 180
         
-        # Ensure the inner cells are stem_cells, middle are transitional_div and outer are transitional_nondiv
+        # Ensure the inner cells are stem_cells, middle are transit_amplifying and outer are differentiated
         for j in range(self.r):
             if j > (self.r / 3 * 2):
-                type_agent = "transitional_nondiv"
+                type_agent = "differentiated"
             elif j > (self.r / 3):
-                type_agent = "transitional_div"
+                type_agent = "transit_amplifying"
             else:
                 type_agent = "stem_cell"
 
@@ -56,7 +67,48 @@ class Tumour_model (Model):
                     self.cells.append(a)
                     self.schedule.add(a)
 
-        # Place chemo
+        self.new_chemo()
+        
+        # Collect data on number of cells
+        self.datacollector = DataCollector(
+            model_reporters={"Total_cells": compute_total_cells, "Stem_cells": compute_stem_cells, 
+                             "transit_amplifying": compute_transit_amplifying, "differentiated": compute_differentiated,
+                             "stop_status" : compute_stop_status})
+
+
+    def duplicate(self, agent_duplicate):
+        # Duplicating the cell
+        if (agent_duplicate.status == "stem_cell" or agent_duplicate.status == "transit_amplifying"):
+            
+            # Determining the status of the new cell based on the surounding cells
+            neighbors = self.grid.get_neighbors(agent_duplicate.pos , True)
+            if agent_duplicate.status == "stem_cell":
+                if len([neighbor for neighbor in neighbors if (neighbor.status== "transit_amplifying" or neighbor.status== "differentiated")] ) > 1:
+                    status_new = "transit_amplifying"
+                else:
+                    status_new = "stem_cell" 
+            elif agent_duplicate.status == "transit_amplifying":
+                if len([neighbor for neighbor in neighbors if neighbor.status== "stem_cell"]) > 1:
+                    status_new = "transit_amplifying"
+                elif len([neighbor for neighbor in neighbors if neighbor.status== "transit_amplifying"]) > 1:
+                    status_new = "differentiated"
+                else:
+                    status_new = "transit_amplifying"
+               
+            # Creating new tumour agent
+            expanded_cell = Tumour_agent(self.id, self, status_new)
+            self.grid.place_agent(expanded_cell, agent_duplicate.pos)
+            self.id += 1 
+            self.schedule.add(expanded_cell)
+            if status_new != "differentiated":
+                self.cells.append(expanded_cell)
+            
+            # Deciding which side the new cell is pushed to
+            x_plus, y_plus = agent_duplicate.choice_direction(expanded_cell)
+            agent_duplicate.expand(expanded_cell, x_plus, y_plus)
+
+
+    def new_chemo (self):
         for i in range(self.concentration):
             a = Chemo_agent(self.id, self)
             self.schedule_chemo.add(a)
@@ -68,41 +120,16 @@ class Tumour_model (Model):
                     self.grid.place_agent(a, (x, y))
                     self.id += 1
                     break
-        
-        # Collect data on number of cells
-        self.datacollector = DataCollector(
-            model_reporters={"Total_cells": compute_total_cells, "Stem_cells": compute_stem_cells, 
-                             "Transitional_div": compute_transitional_div, "Transitional_nondiv": compute_transitional_nondiv})
-
-
-    def duplicate(self, agent_duplicate):
-        # Duplicating the cell
-        if (agent_duplicate.status == "stem_cell" or agent_duplicate.status == "transitional_div"):
-            
-            if agent_duplicate.status == "stem_cell":
-                status = random.choices(["stem_cell", "transitional_div"], weights=[0.1, 0.9], k=1)[0]
-            elif agent_duplicate.status == "transitional_div":
-                status = random.choices(["transitional_div", "transitional_nondiv"], weights=[0.1, 0.9], k=1)[0]
-            
-            # Creating new tumour agent
-            expanded_cell = Tumour_agent(self.id, self, status)
-            self.grid.place_agent(expanded_cell, agent_duplicate.pos)
-            self.id += 1 
-            self.schedule.add(expanded_cell)
-            if status != "transitional_nondiv":
-                self.cells.append(expanded_cell)
-            
-            
-            # Deciding which side the new cell is pushed to
-            x_plus, y_plus = agent_duplicate.choice_direction(expanded_cell)
-            agent_duplicate.expand(expanded_cell, x_plus, y_plus)
-
 
     def step(self):
+
         # Deciding which dividing cell wil divide
         agent_step = self.random.choices(self.cells, k = int(len(self.cells)* 0.1))
         for i in range(len(agent_step)):
             self.duplicate(agent_step[i])
+    
+        if self.steps % int(100 / self.chemo_repetition) == 0 and self.steps != 0:
+            self.new_chemo()
         
         # Step tumour agents
         self.schedule.step()
@@ -112,6 +139,13 @@ class Tumour_model (Model):
 
         # Data collection
         self.datacollector.collect(self)
+
+        if len([cell for cell in self.schedule.agents if cell.status == "stem_cell"]) < 1:
+            self.stop_status = "Succes"
+            self.running = False
+
+        self.steps += 1
+
 
         
 

@@ -60,3 +60,17 @@
     - in order to use datacollector the tumour agent schedule had to change from schedule_cells -> schedule otherwise it would not work.
 - adjusted tumour agent-> as it had agents double
 - removed errors from chemo agent
+- tried to ajust frame -> so metastasis could be added. However this was not possible as then there would be a recursion error. -> kept the grid at 75X75
+- added worked_out to chemo
+
+
+## 17-12-2021
+- added new chemo -> removed chemo in init as it was now unnescecairy
+- removed the calling of function choice direction -> to get a more round division
+- added chemo repitition. Which can be every 10 steps to every 100 steps. based on 1-10 scale -> 10 very often 1 rarely.
+- added vascularisation which has effect on how much the chemo will be moved towards the tumour
+- stop the model if there are no stem cells left -> succes
+    - stop the model if it hits the border of the grid -> fail
+- add experiment -> batch runner to model 
+    - this takes as variabless the radius and concentration and returns a succes or fail and plots this
+- add another experiment

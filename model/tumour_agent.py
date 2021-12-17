@@ -28,18 +28,17 @@ class Tumour_agent(Agent):
             # Remember the cell that was in there before expansion               
             cell_contents = self.model.grid.get_cell_list_contents((x + x_plus, y + y_plus))
             old_cell = cell_contents[0]
-
             self.model.grid.move_agent(agent_to_place, (x + x_plus, y + y_plus))
-            x_plus, y_plus = self.choice_direction(old_cell)
             
             # Relocate the old cell
             self.expand(old_cell, x_plus, y_plus)
         
         else:
-            # If the direction is not possible (end of )
-            self.model.grid._remove_agent(agent_to_place.pos, agent_to_place)
-            self.model.schedule.remove(agent_to_place)
-            self.model.cells.remove(agent_to_place)
+            # If the direction is not possible (end of grid) remove agent
+            # self.model.grid._remove_agent(agent_to_place.pos, agent_to_place)
+            # self.model.schedule.remove(agent_to_place)
+            self.model.stop_status = "Fail"
+            self.model.running = False
 
 
     def choice_direction(self, agent_to_direct):
@@ -74,16 +73,16 @@ class Tumour_agent(Agent):
         neighborhood = self.model.grid.get_neighborhood(self.pos , True)
         neighbors = [neighbor for neighbor in neighborhood if not self.model.grid.is_cell_empty(neighbor)]
         # A dividing cell dies when it has less then 2 neighbors (this is a non stable envirnment for the cell)
-        if len(neighbors) < 3 and (self.status == "stem_cell" or self.status == "transitional_div"):
+        if len(neighbors) < 3 and (self.status == "stem_cell" or self.status == "transit_amplifying"):
             self.model.grid._remove_agent(self.pos, self)
             self.model.schedule.remove(self)
             self.model.cells.remove(self)
 
         # Cell dies when of a certain age
-        elif self.status == "transitional_nondiv" and self.age > random.randint(25, 100):
+        elif self.status == "differentiated" and self.age > random.randint(25, 100):
             self.model.grid._remove_agent(self.pos, self)
             self.model.schedule.remove(self)
-        elif self.status == "transitional_div" and self.age > random.randint(50, 500):
+        elif self.status == "transit_amplifying" and self.age > random.randint(50, 500):
             self.model.grid._remove_agent(self.pos, self)
             self.model.schedule.remove(self)
             self.model.cells.remove(self)
@@ -102,16 +101,28 @@ class Chemo_agent(Agent):
         self.cells_killed = 0
 
     def move(self):
-        # Move the chemocells
+        # Move the chemo molecules
+        x, y = self.pos
+        if x < self.model.grid.width/2:
+            x_new = x + 1
+        elif x > self.model.grid.width/2:
+            x_new = x - 1
+
+        if y < self.model.grid.height/2:
+           y_new = y + 1
+        elif y > self.model.grid.height/2:
+            y_new = y - 1
+
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
-        new_position = random.choice(possible_steps)
-        self.model.grid.move_agent(self, new_position)
+        other_position = random.choices(possible_steps)
+        new_position = random.choices([other_position, [(x_new,y_new)]], weights=[1- self.model.vascularisation /10, self.model.vascularisation /10], k=1)[0]
+        self.model.grid.move_agent(self, new_position[0])
         
     
     def kill(self):
          # If there is a dividing tumour cell present kill it
         this_cell = self.model.grid.get_cell_list_contents([self.pos])
-        cancer_cell = [obj for obj in this_cell if (obj.status == "stem_cell" or obj.status == "transitional_div")]
+        cancer_cell = [obj for obj in this_cell if (obj.status == "stem_cell" or obj.status == "transit_amplifying")]
         if len(cancer_cell) > 0:
             cell_to_kill = cancer_cell[0]
             self.model.grid._remove_agent(cell_to_kill.pos, cell_to_kill)
@@ -120,9 +131,10 @@ class Chemo_agent(Agent):
             self.cells_killed += 1
     
     def worked_out(self):
-        if self.age > random.randint(30, 150) or self.cells_killed > random.randint(5, 25):
+        if self.age > random.randint(10, 100) or self.cells_killed > random.randint(5, 10):
             self.model.grid._remove_agent(self.pos, self)
             self.model.schedule_chemo.remove(self)
+    
         
     def step(self):
         self.move()
