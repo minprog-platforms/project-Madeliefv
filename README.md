@@ -18,7 +18,7 @@ In this model, we consider two variable properties: size and division capabiliti
 - To run the model, run ``runner.py`` with command in this directory. e.g.
 
 ```
-    $ python runner.py live
+    $ python3 runner.py live
 ```
 - several commands can be used:
     - live: to run live model in your browser.
