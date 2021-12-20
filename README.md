@@ -1,24 +1,34 @@
-# Tumor growth - computational science - Madelief Verburg
+# Tumor growth model
+### computational science - Madelief Verburg (14125331)
+----------------------------------------------------
+
 ## Summary
 This is a simplified tumour model. This model, aims to answer the research question: 
 **What is the effect of the properties of the tumour and the concentration of chemotherapy on tumour growth?**
 
-In this model, we consider a two properties: size and division capabilities. It also looks at the effect of chemotherapy on tumour growth. The model contains two classes of agents namely : 
+In this model, we consider two variable properties: size and division capabilities. It also looks at the effect of chemotherapy on tumour growth. The model contains two classes of agents namely : 
 - chemo molecules (Chemo_agent)
 - tumour cells (Tumour_agent)
-    - stem_cell (divide)
-    - transit_amplifying (divide)
-    - differentiated (do not divide)
-
+    - stem_cell (divide) (blue coloured)
+    - transit_amplifying (divide) (red coloured)
+    - differentiated (do not divide) (pink coloured)
+    
+--------------------------------------------------
 ## Run model
-    - To run the model, run ``run.py`` in this directory. e.g.
+- To run the model, run ``runner.py`` with command in this directory. e.g.
 
 ```
-    $ python run.py
+    $ python runner.py live
 ```
+- several commands can be used:
+    - live: to run live model in your browser.
+    - concentration_radius: to do a batch run with variables concentration and radius.
+    - concentration_radius9_15 : to do a batch run with variables concentration and radius specific for radius between 9-15.
+    - repitition_concentration : to do a batch run with variables chemo repetition and concentration.
+    - vascularisation_radius: to do a batch run with variables vascularisaiton and radius.
 
-- Then open your browser to [http://127.0.0.1:8888/](http://127.0.0.1:8888/) and press Reset, then Run.
 
+---------------------------------------------------
 
 ## Set up
 
@@ -67,12 +77,12 @@ In this model, we consider a two properties: size and division capabilities. It 
 
 
 ### End of model
-model stops when:
+- model stops when:
     - no stem cells are present any more (succes)
     - the cells reach the end of the grid (fail)
-
+----------------------------------------------------
 ## Files
-- Server.py
+- runner.py
     - contains visualisation
         - shows grid
         - show graph with number of cells
@@ -80,7 +90,7 @@ model stops when:
     - contains several experiments:
         - run_batch_con_r: shows which concentration and which radius is succesfull (cancer gone) or failed (cancer survived)
             - visualized in a scatterplot
-        - run_batch_con_r_time: shows which concentration and which radius is succesfull (cancer gone) or failed (cancer survived) and the time it took
+        - run_batch_con_r_9_15: shows which concentration and which radius is succesfull (cancer gone) or failed (cancer survived) specific for radius 9 -15
             - visualized in a scatterplot 
         - run_batch_repition_con: shows which repitition and concentration of chemo is succesfull and which is nog
             - visualized in a scatterplot
@@ -91,13 +101,6 @@ model stops when:
     - contains model
         - divide: divides tumour cells
         - new_chemo : adds dose of chemo
-    - contains compute functions:
-        - compute_total_cells
-        - compute_stem_cells
-        - compute_transit_amplifying
-        - compute_differentiated
-        - compute_stop_status
-        - compute_steps
 
 - tumour_agent.py
     - Tumour_agent
@@ -108,6 +111,15 @@ model stops when:
         - move: decides where the chemo agent will move to.
         - kill: decides if a tumour agent will be killed and removes that agent.
         - worked_out : decides if a chemo agent is worked out and will be removed from model.
+
+- compute_tumour.py
+    - contains compute functions:
+    - compute_total_cells
+    - compute_stem_cells
+    - compute_transit_amplifying
+    - compute_differentiated
+    - compute_stop_status
+    - compute_steps
 
 - PROPOSAL.md
     - the proposal for this project
@@ -120,9 +132,8 @@ model stops when:
 
 - README.md
     - this document containing information about the model.
-     
 
-
+---------------------------------------------------   
 ## short theory behind the model
 During mitosis, a stem cell can divide either asymmetrically or symmetrically. During asymmetric mitosis, one of the two daughter cells stays a stem cell and, thus replacing its parent. This means that a stem cell effectively never dies. It is quasi reincarnated after each division. The other daughter cell turns into a transitory amplifying cell, which moves outward. A stem cell may also divide symmetrically into two stem cells. 
 

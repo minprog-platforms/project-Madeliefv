@@ -74,3 +74,16 @@
 - add experiment -> batch runner to model 
     - this takes as variabless the radius and concentration and returns a succes or fail and plots this
 - add another experiment
+
+## 20-12-2021
+- rewrote README.md
+- adjusted points from review:
+    - addd commandline arguments in runner.py
+    - overall style adjustements
+    - adjusted comments
+    - put compute function in a seperate file
+- Added review
+- Added summary to each python file
+- Adjusted batch runs 
+- Assesment.md added 
+
