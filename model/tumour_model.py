@@ -76,18 +76,18 @@ class Tumour_model (Model):
                              "stop_status" : compute_stop_status})
 
 
-    def duplicate(self, agent_duplicate):
+    def divide(self, agent_divide):
         # Duplicating the cell
-        if (agent_duplicate.status == "stem_cell" or agent_duplicate.status == "transit_amplifying"):
+        if (agent_divide.status == "stem_cell" or agent_divide.status == "transit_amplifying"):
             
             # Determining the status of the new cell based on the surounding cells
-            neighbors = self.grid.get_neighbors(agent_duplicate.pos , True)
-            if agent_duplicate.status == "stem_cell":
+            neighbors = self.grid.get_neighbors(agent_divide.pos , True)
+            if agent_divide.status == "stem_cell":
                 if len([neighbor for neighbor in neighbors if (neighbor.status== "transit_amplifying" or neighbor.status== "differentiated")] ) > 1:
                     status_new = "transit_amplifying"
                 else:
                     status_new = "stem_cell" 
-            elif agent_duplicate.status == "transit_amplifying":
+            elif agent_divide.status == "transit_amplifying":
                 if len([neighbor for neighbor in neighbors if neighbor.status== "stem_cell"]) > 1:
                     status_new = "transit_amplifying"
                 elif len([neighbor for neighbor in neighbors if neighbor.status== "transit_amplifying"]) > 1:
@@ -97,19 +97,20 @@ class Tumour_model (Model):
                
             # Creating new tumour agent
             expanded_cell = Tumour_agent(self.id, self, status_new)
-            self.grid.place_agent(expanded_cell, agent_duplicate.pos)
+            self.grid.place_agent(expanded_cell, agent_divide.pos)
             self.id += 1 
             self.schedule.add(expanded_cell)
             if status_new != "differentiated":
                 self.cells.append(expanded_cell)
             
             # Deciding which side the new cell is pushed to
-            x_plus, y_plus = agent_duplicate.choice_direction(expanded_cell)
-            agent_duplicate.expand(expanded_cell, x_plus, y_plus)
+            x_plus, y_plus = agent_divide.choice_direction(expanded_cell)
+            agent_divide.expand(expanded_cell, x_plus, y_plus)
 
 
     def new_chemo (self):
-        for i in range(self.concentration):
+        # Adds new dose of chemo to model
+        for _ in range(self.concentration):
             a = Chemo_agent(self.id, self)
             self.schedule_chemo.add(a)
             # Add the agent to a random grid cell
@@ -126,7 +127,7 @@ class Tumour_model (Model):
         # Deciding which dividing cell wil divide
         agent_step = self.random.choices(self.cells, k = int(len(self.cells)* 0.1))
         for i in range(len(agent_step)):
-            self.duplicate(agent_step[i])
+            self.divide(agent_step[i])
     
         if self.steps % int(100 / self.chemo_repetition) == 0 and self.steps != 0:
             self.new_chemo()

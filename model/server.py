@@ -143,6 +143,6 @@ def run_batch_vasc_radius():
     plt.scatter(run_data.radius, run_data.concentration, s = 200, c= [color_dict[i] for i in run_data.stop_status])
     plt.show()
 
-run_batch_repition_con()
+run_surfer()
 
 

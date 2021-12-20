@@ -34,9 +34,7 @@ class Tumour_agent(Agent):
             self.expand(old_cell, x_plus, y_plus)
         
         else:
-            # If the direction is not possible (end of grid) remove agent
-            # self.model.grid._remove_agent(agent_to_place.pos, agent_to_place)
-            # self.model.schedule.remove(agent_to_place)
+            # If the direction is not possible (end of grid) stop model
             self.model.stop_status = "Fail"
             self.model.running = False
 
@@ -101,7 +99,7 @@ class Chemo_agent(Agent):
         self.cells_killed = 0
 
     def move(self):
-        # Move the chemo molecules
+        # Decides which move is towards the middle
         x, y = self.pos
         if x < self.model.grid.width/2:
             x_new = x + 1
@@ -113,6 +111,7 @@ class Chemo_agent(Agent):
         elif y > self.model.grid.height/2:
             y_new = y - 1
 
+        # Move the chemo molecules
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=True, include_center=False)
         other_position = random.choices(possible_steps)
         new_position = random.choices([other_position, [(x_new,y_new)]], weights=[1- self.model.vascularisation /10, self.model.vascularisation /10], k=1)[0]
