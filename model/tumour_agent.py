@@ -150,4 +150,3 @@ class Chemo_agent(Agent):
         self.kill()
         self.worked_out()
         self.age += 1
-

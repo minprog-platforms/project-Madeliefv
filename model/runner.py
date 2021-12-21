@@ -17,7 +17,7 @@ from tumour_model import Tumour_model, compute_stop_status
 from mesa.visualization.UserParam import UserSettableParameter
 from mesa.batchrunner import BatchRunner
 import matplotlib.pyplot as plt
-import sys
+import argparse
 
 
 def run_surfer():
@@ -66,7 +66,7 @@ def run_surfer():
                            {"radius": radius_slider, "concentration": concentration_slider,
                             "chemo_repetition": chemo_repetition_slider, "vascularisation": vascularisation_slider,
                             "width": 75, "height": 75})
-    server.port = 8521   # The default         
+    server.port = 8521   # The default       
     server.launch()
 
 
@@ -194,15 +194,21 @@ def run_batch_vasc_r():
     plt.show()
 
 
-arg = sys.argv[1]
-if arg == "live":
-    run_surfer()
-elif arg == "concentration_radius":
-    run_batch_con_r()
-elif arg == "repitition_concentration":
-    run_batch_rep_con()
-elif arg == "vascularisation_radius":
-    run_batch_vasc_r()
-elif arg == "concentration_radius9_15":
-    run_batch_con_r_9_15()
+# Set-up parsing command line arguments for type experiment
+parser = argparse.ArgumentParser(description='how do you want to run the model')
+parser.add_argument("type_experiment", 
+                    help="chose which experiment you want to run: live, concentration_radius, repition_concentration, vascularisation_radius, concentration_radius9_15", 
+                    default="live")
+args = parser.parse_args()
 
+# Perform type experiment asked for
+if args.type_experiment == "live":
+    run_surfer()
+elif args.type_experiment == "concentration_radius":
+    run_batch_con_r()
+elif args.type_experiment == "repitition_concentration":
+    run_batch_rep_con()
+elif args.type_experiment == "vascularisation_radius":
+    run_batch_vasc_r()
+elif args.type_experiment == "concentration_radius9_15":
+    run_batch_con_r_9_15()
