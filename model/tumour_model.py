@@ -25,7 +25,7 @@ class Tumour_model (Model):
         self.schedule = RandomActivation(self)
         self.running = True
         self.id = 0
-        self.cells = []
+        self.dividing_cells = []
         self.steps = 0
         self.stop_status = "not_stopped"
 
@@ -50,15 +50,15 @@ class Tumour_model (Model):
                     a = Tumour_agent(self.id, self, type_agent)
                     self.grid.place_agent(a, (x + x1, y + y1))
                     self.id += 1
-                    self.cells.append(a)
+                    self.dividing_cells.append(a)
                     self.schedule.add(a)
 
         self.new_chemo()
 
-        # Collect data on number of cells
+        # Collect data on number of cells and stop status
         self.datacollector = DataCollector(
             model_reporters={"Total_cells": compute_total_cells, "Stem_cells": compute_stem_cells,
-                             "transit_amplifying": compute_transit_amplifying, "differentiated": compute_differentiated,
+                             "Transit_amplifying": compute_transit_amplifying, "Differentiated": compute_differentiated,
                              "stop_status": compute_stop_status})
 
     def divide(self, agent_divide):
@@ -87,7 +87,7 @@ class Tumour_model (Model):
             self.id += 1
             self.schedule.add(expanded_cell)
             if status_new != "differentiated":
-                self.cells.append(expanded_cell)
+                self.dividing_cells.append(expanded_cell)
 
             # Deciding which side the new cell is pushed to
             x_plus, y_plus = agent_divide.choice_direction(expanded_cell)
@@ -110,7 +110,7 @@ class Tumour_model (Model):
     def step(self):
         """"Run one step of the tumour model"""
         # Deciding which dividing cell wil divide
-        agent_step = self.random.choices(self.cells, k=int(len(self.cells) * 0.1))
+        agent_step = self.random.choices(self.dividing_cells, k=int(len(self.dividing_cells) * 0.1))
         for i in range(len(agent_step)):
             self.divide(agent_step[i])
 

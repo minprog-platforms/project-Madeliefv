@@ -25,3 +25,7 @@
 ### What biological characteristics to take into account and which not
     The biggest challenge for this model was to set its limits. Tumours are imensly complex and to take all factors into account is just not feasable. Therefore decisions had to be made, what to take into account and what not. This made that this model is a overly simplefied model of a tumour. However I do think it shows the interaction between characteristics of the tumour and the intensity of the treatment.
 
+
+### Screencast
+    It was very difficult to show all features and explain exactly how my model worked in only 6 minutes. Therefore I had to make some cuts. I therefore decided not to show the runner file where the experiments are shown and the visualizations. I also could not go into the conclusions and functionality as deeply as I would have liked and I had to talk really fast. If I would have more time I would  
+

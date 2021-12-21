@@ -81,7 +81,7 @@ class Tumour_agent(Agent):
         if len(neighbors) < 3 and (self.status == "stem_cell" or self.status == "transit_amplifying"):
             self.model.grid._remove_agent(self.pos, self)
             self.model.schedule.remove(self)
-            self.model.cells.remove(self)
+            self.model.dividing_cells.remove(self)
 
         # Cell dies when of a certain age
         elif self.status == "differentiated" and self.age > random.randint(25, 100):
@@ -90,7 +90,7 @@ class Tumour_agent(Agent):
         elif self.status == "transit_amplifying" and self.age > random.randint(50, 500):
             self.model.grid._remove_agent(self.pos, self)
             self.model.schedule.remove(self)
-            self.model.cells.remove(self)
+            self.model.dividing_cells.remove(self)
 
     def step(self):
         """Preforms step of tumour agent"""
@@ -135,7 +135,7 @@ class Chemo_agent(Agent):
             cell_to_kill = cancer_cell[0]
             self.model.grid._remove_agent(cell_to_kill.pos, cell_to_kill)
             self.model.schedule.remove(cell_to_kill)
-            self.model.cells.remove(cell_to_kill)
+            self.model.dividing_cells.remove(cell_to_kill)
             self.cells_killed += 1
 
     def worked_out(self):

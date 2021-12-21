@@ -44,7 +44,7 @@ def run_surfer():
         return portrayal
 
     # Add sliders so the variables can be changed
-    concentration_slider = UserSettableParameter('slider', "concentration", 200, 0, 500, 10)
+    concentration_slider = UserSettableParameter('slider', "concentration", 200, 0, 1000, 10)
     radius_slider = UserSettableParameter('slider', "radius", 10, 0, 35, 1)
     chemo_repetition_slider = UserSettableParameter('slider', "chemo repitition", 3, 0, 10, 1)
     vascularisation_slider = UserSettableParameter('slider', "vascularisation", 3, 0, 10, 1)
@@ -56,7 +56,7 @@ def run_surfer():
     chart = ChartModule([{"Label": "Total_cells", "Color": "Black"},
                         {"Label": "Stem_cells", "Color": "Blue"},
                         {"Label": "Transit_amplifying", "Color": "Red"},
-                        {"Label": "Differentiated", "Color": "pink"}],
+                        {"Label": "Differentiated", "Color": "Pink"}],
                         data_collector_name='datacollector')
 
     # Creating the server with model
@@ -78,8 +78,8 @@ def run_batch_con_r():
                     "height": 75,
                     "chemo_repetition": 3,
                     "vascularisation": 3}
-    variable_params = {"radius": range(0, 30, 5),
-                       "concentration": range(100, 1000, 100)}
+    variable_params = {"radius": range(0, 31, 5),
+                       "concentration": range(100, 1100, 100)}
 
     # Create batch run
     batch_run = BatchRunner(Tumour_model,
@@ -96,8 +96,8 @@ def run_batch_con_r():
     # Visualize the batch run
     color_dict = {'Succes': 'green', 'Fail': 'red', 'not_stopped': 'yellow'}
     plt.scatter(run_data.radius, run_data.concentration, s=200, c=[color_dict[i] for i in run_data.stop_status])
-    plt.xlabel("Concentration chemo")
-    plt.ylabel("Radius tumour")
+    plt.xlabel("Radius tumour")
+    plt.ylabel("Concentration chemo")
     plt.show()
 
 
@@ -109,15 +109,15 @@ def run_batch_con_r_9_15():
                     "height": 75,
                     "chemo_repetition": 3,
                     "vascularisation": 3}
-    variable_params = {"radius": range(9, 15, 1),
-                       "concentration": range(100, 1000, 100)}
+    variable_params = {"radius": range(9, 16, 1),
+                       "concentration": range(100, 1100, 100)}
 
     # Create batch run
     batch_run = BatchRunner(Tumour_model,
                             variable_params,
                             fixed_params,
-                            iterations=5,
-                            max_steps=300,
+                            iterations=10,
+                            max_steps=350,
                             model_reporters={"stop_status": compute_stop_status})
     batch_run.run_all()
 
@@ -127,8 +127,8 @@ def run_batch_con_r_9_15():
     # Visualize the batch run
     color_dict = {'Succes': 'green', 'Fail': 'red', 'not_stopped': 'yellow'}
     plt.scatter(run_data.radius, run_data.concentration, s=200, c=[color_dict[i] for i in run_data.stop_status])
-    plt.xlabel("Concentration chemo")
-    plt.ylabel("Radius tumour")
+    plt.xlabel("Radius tumour")
+    plt.ylabel("Concentration chemo")
     plt.show()
 
 
@@ -140,15 +140,15 @@ def run_batch_rep_con():
                     "height": 75,
                     "radius": 10,
                     "vascularisation": 3}
-    variable_params = {"chemo_repetition": range(10, 1),
-                       "concentration": range(100, 1000, 100)}
+    variable_params = {"chemo_repetition": range(1, 11, 1),
+                       "concentration": range(100, 1100, 100)}
 
     # Create batch run
     batch_run = BatchRunner(Tumour_model,
                             variable_params,
                             fixed_params,
                             iterations=5,
-                            max_steps=300,
+                            max_steps=350,
                             model_reporters={"stop_status": compute_stop_status})
     batch_run.run_all()
 
@@ -158,8 +158,8 @@ def run_batch_rep_con():
     # Visualize the batch run
     color_dict = {'Succes': 'green', 'Fail': 'red', 'not_stopped': 'yellow'}
     plt.scatter(run_data.chemo_repetition, run_data.concentration, s=200, c=[color_dict[i] for i in run_data.stop_status])
-    plt.xlabel("Concentration chemo")
-    plt.ylabel("Chemo repitition")
+    plt.xlabel("Chemo repitition")
+    plt.ylabel("Concentration chemo")
     plt.show()
 
 
@@ -171,8 +171,8 @@ def run_batch_vasc_r():
                     "height": 75,
                     "chemo_repetition": 3,
                     "concentration": 300}
-    variable_params = {"radius": range(0, 30, 5),
-                       "vascularisation": range(1, 10, 1)}
+    variable_params = {"radius": range(0, 31, 5),
+                       "vascularisation": range(1, 11, 1)}
 
     # Create batch run
     batch_run = BatchRunner(Tumour_model,
@@ -189,8 +189,8 @@ def run_batch_vasc_r():
     # Visualize the batch run
     color_dict = {'Succes': 'green', 'Fail': 'red', 'not_stopped': 'yellow'}
     plt.scatter(run_data.radius, run_data.vascularisation, s=200, c=[color_dict[i] for i in run_data.stop_status])
-    plt.xlabel("Vascularisation tumour")
-    plt.ylabel("Radius tumour")
+    plt.xlabel("Radius tumour")
+    plt.ylabel("Vascularisation tumour")
     plt.show()
 
 

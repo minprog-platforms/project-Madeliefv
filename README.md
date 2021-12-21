@@ -49,17 +49,17 @@ In this model, we consider two variable properties: size and division capabiliti
 #### tumour cells: 
 - Every step 10% of the dividing cells **divide**. 
     - In real tumours this division rate is dependend on how agressive the tumour is. 10% however gives the most natural tumour progression
-    - the stem_cells divide either into two stem_cells or in a stem_cell and a transit_amplifying cell. 
-        - The way the stem_cell divide is based on its surounding cells. If it is surrounded by transit_ampifying cells it will also divide into one transit_amplyfing cell -> cellular communication
-    - the transit_amplyfing cell will divide into two transit_amplifying cells or into a transit_amplifying cell and a differentiated cell.
-        - The way the transit_amplyfing cell divides is also based on its surrounding cells
-    - When the cells divide they will push the other cells outwards till there is space for them
+    - The stem_cells divide either into two stem_cells or in a stem_cell and a transit_amplifying cell. 
+        - The way the stem_cell divide is based on its surounding cells. If it is surrounded by transit_ampifying cells it will also divide into one transit_amplyfing cell -> cellular communication.
+    - The transit_amplyfing cell will divide into two transit_amplifying cells or into a transit_amplifying cell and a differentiated cell.
+        - The way the transit_amplyfing cell divides is also based on its surrounding cells.
+    - **expand** the tumour happens when the cells divide they will push the other cells outwards till there is space for them.
 
 - **Death** of tumour cells
-    - transit_amplifying and differentiated cells can die based on their age 
-        - stem_cells are effectivelly immortal -> so their death is not taken into account in this model
-    - stem_cells and transit_amplifying cells can die based on their surrounding
-        - if not enough other cells surround these cells this creates an unstable environment -> which lets the cells die. 
+    - Transit_amplifying and differentiated cells can die based on their age .
+        - Stem_cells are effectivelly immortal -> so their death is not taken into account in this model.
+    - Stem_cells and transit_amplifying cells can die based on their surrounding.
+        - If not enough other cells surround these cells this creates an unstable environment -> which lets the cells die. 
 
 #### chemo cells:
 - Every step all chemo agents **move**. 
@@ -68,18 +68,18 @@ In this model, we consider two variable properties: size and division capabiliti
 - Chemo agents can **kill** tumour agents that divide
     - Chemo molecules work only on dividing cells thus only can kill them
 
-- Chemo agents can also be **worked out**
-    - If a chemo agent has killed a certain amount of tumour cells it will be removed
-    - If a chemo has reached a certain age it will be removed
+- Chemo agents can also be **worked out**.
+    - If a chemo agent has killed a certain amount of tumour cells it will be removed.
+    - If a chemo has reached a certain age it will be removed.
        
-- **new chemo** can be added
-    - depended on the chemo_repitiion new dose of chemo will be added after a number of steps.
-
+- **new chemo** can be added.
+    - Depended on the chemo_repitiion new dose of chemo will be added after a number of steps.
 
 ### End of model
-- model stops when:
-    - no stem cells are present any more (succes)
-    - the cells reach the end of the grid (fail)
+- Model stops when:
+    - No stem cells are present any more (succes) (green in experiments visualization).
+    - The cells reach the end of the grid (fail) (red in experiments visualization).
+    - Model was stoped before end point was reached (not_stopped) (yellow in experiments visualizations).
 ----------------------------------------------------
 ## Files
 - runner.py
@@ -114,12 +114,11 @@ In this model, we consider two variable properties: size and division capabiliti
 
 - compute_tumour.py
     - contains compute functions:
-    - compute_total_cells
-    - compute_stem_cells
-    - compute_transit_amplifying
-    - compute_differentiated
-    - compute_stop_status
-    - compute_steps
+        - compute_total_cells
+        - compute_stem_cells
+        - compute_transit_amplifying
+        - compute_differentiated
+        - compute_stop_status
 
 - PROPOSAL.md
     - the proposal for this project
@@ -132,6 +131,10 @@ In this model, we consider two variable properties: size and division capabiliti
 
 - README.md
     - this document containing information about the model.
+--------------------------------------------------- 
+## Screencast
+
+[Screencast tumour model](https://video.uva.nl/media/Screencast_tumour_model/0_yt6agmrh)
 
 ---------------------------------------------------   
 ## short theory behind the model
