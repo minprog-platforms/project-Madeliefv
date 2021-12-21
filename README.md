@@ -83,11 +83,11 @@ In this model, we consider two variable properties: size and division capabiliti
 ----------------------------------------------------
 ## Files
 - runner.py
-    - contains visualisation
+    - Contains visualisation
         - shows grid
         - show graph with number of cells
         - shows sliders for variable adjustments
-    - contains several experiments:
+    - Contains several experiments:
         - run_batch_con_r: shows which concentration and which radius is succesfull (cancer gone) or failed (cancer survived)
             - visualized in a scatterplot
         - run_batch_con_r_9_15: shows which concentration and which radius is succesfull (cancer gone) or failed (cancer survived) specific for radius 9 -15
