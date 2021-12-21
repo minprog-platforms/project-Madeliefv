@@ -53,6 +53,7 @@ class Tumour_model (Model):
                     self.dividing_cells.append(a)
                     self.schedule.add(a)
 
+        # Place chemo
         self.new_chemo()
 
         # Collect data on number of cells and stop status
@@ -98,6 +99,7 @@ class Tumour_model (Model):
         for _ in range(self.concentration):
             a = Chemo_agent(self.id, self)
             self.schedule_chemo.add(a)
+            
             # Add the agent to a random grid cell
             while True:
                 x = self.random.randrange(self.grid.width)

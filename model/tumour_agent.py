@@ -34,6 +34,7 @@ class Tumour_agent(Agent):
 
         # If there is no free space to move, put cell on place of direction and replace the cell on that place
         elif y + y_plus < self.model.grid.height and y + y_plus >= 0 and x + x_plus < self.model.grid.width and x + x_plus >= 0:
+
             # Remember the cell that was in there before expansion
             cell_contents = self.model.grid.get_cell_list_contents((x + x_plus, y + y_plus))
             old_cell = cell_contents[0]
@@ -43,6 +44,7 @@ class Tumour_agent(Agent):
             self.expand(old_cell, x_plus, y_plus)
 
         else:
+
             # If the direction is not possible (end of grid) stop model
             self.model.stop_status = "Fail"
             self.model.running = False
@@ -77,6 +79,7 @@ class Tumour_agent(Agent):
         """Checks if a cell dies and if so removes it"""
         neighborhood = self.model.grid.get_neighborhood(self.pos, True)
         neighbors = [neighbor for neighbor in neighborhood if not self.model.grid.is_cell_empty(neighbor)]
+       
         # A dividing cell dies when it has less then 2 neighbors (this is a non stable envirnment for the cell)
         if len(neighbors) < 3 and (self.status == "stem_cell" or self.status == "transit_amplifying"):
             self.model.grid._remove_agent(self.pos, self)
@@ -108,6 +111,7 @@ class Chemo_agent(Agent):
 
     def move(self):
         """Moves agents """
+        
         # Decides which move is towards the middle
         x, y = self.pos
         if x < self.model.grid.width / 2:
